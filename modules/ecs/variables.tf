@@ -34,10 +34,6 @@ variable "desired_count" {
   
 }
 
-variable "fargate_enabled" {
-  
-}
-
 variable "log_retention_in_dayst" {
   
 }
@@ -91,7 +87,7 @@ variable  "subnets" {
 }
 
 variable  "fargate_enabled" {
-  dafault = false
+  default = false
 }
 
 variable  "assign_public_ip" {
@@ -103,10 +99,10 @@ variable  "security_groups" {
 }
 
 variable  "enable_code_deploy" {
-  
+  default = false
 }
 variable  "lb_enable" {
-  
+  default = false
 }
 variable  "max_capacity" {
   
