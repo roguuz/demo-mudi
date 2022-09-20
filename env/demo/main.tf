@@ -141,7 +141,7 @@ module "ecs-services" {
   lb_enable                   = true
   fargate_enabled = true
   assign_public_ip = true
-  
+  subnets = [module.vpc.private_subnets[0],module.vpc.private_subnets[1],module.vpc.private_subnets[2]]
   cpu_limit           = 512
   memory_limit         = 512
   desired_count   = 1
@@ -159,6 +159,4 @@ module "ecs-services" {
       ssm     = {}
     }
   ]
-  vpc_id              = module.vpc.vpc_id
-  subnets = [module.vpc.private_subnets[0],module.vpc.private_subnets[1],module.vpc.private_subnets[2]]
 }

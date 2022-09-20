@@ -58,10 +58,6 @@ variable "task_role_arn" {
   
 }
 
-variable "enable_code_deploy" {
-default = false
-}
-
 variable "cluster" {
   
 }
