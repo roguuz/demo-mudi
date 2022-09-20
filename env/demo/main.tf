@@ -91,7 +91,7 @@ module "ecs-fargate" {
 ###########################################
 # ECR 
 ###########################################
-resource "aws_ecr_repository" "one" {
+resource "aws_ecr_repository" "ecr" {
   name = "boundless-demo"
 
   image_scanning_configuration {
@@ -99,4 +99,31 @@ resource "aws_ecr_repository" "one" {
   }
 }
 
+#############################
+# ECS Service
+#############################
 
+module "ecs" {
+  source = "git@github.com:PresencePG/presence-devops-module-ecs.git?ref=3.0.1"
+  lb_enable                   = true
+  cpu_limit           = 512
+  memory_limit         = 512
+  desired_count   = 1
+  container_task_definition = [
+    {
+      name       = "demo-boundless"
+      privileged = false
+      image      = "nginx"
+      image_tag  = "latest"
+      port       = 80
+      environment_variables = {
+      }
+      # secrets = { 
+      # }
+      ssm     = {}
+    }
+  ]
+  vpc_id              = var.vpc_id
+  vpc_public_subnets  = var.vpc_public_subnets
+  vpc_private_subnets = var.vpc_private_subnets
+}

@@ -46,11 +46,11 @@ variable "ecs_type" {
   
 }
 
-variable "memory" {
+variable "memory_limit" {
   
 }
 
-variable "cpu" {
+variable "cpu_limit" {
   
 }
 
