@@ -71,11 +71,44 @@ module "sg-alb" {
   ]
 }
 
+###############################
+# Application Load Balancer
+###############################
+module "alb" {
+  source  = "terraform-aws-modules/alb/aws"
+  version = "~> 6.0"
+
+  name = "demo-boundless"
+
+  load_balancer_type = "application"
+
+  vpc_id             = module.vpc.vpc_id
+  subnets            = [module.vpc.public_subnets[0],module.vpc.public_subnets[1],module.vpc.public_subnets[2]]
+  security_groups    = [module.sg_alb.security_group_id]
+
+  target_groups = [
+    {
+      name_prefix      = "demo-boundless-tg"
+      backend_protocol = "HTTP"
+      backend_port     = 80
+      target_type      = "ip"
+    }
+  ]
+
+  http_tcp_listeners = [
+    {
+      port               = 80
+      protocol           = "HTTP"
+      target_group_index = 0
+    }
+  ]
+}
+
 ###########################################
 # ECS CLUSTER
 ###########################################
 
-module "ecs-fargate" {
+module "ecs-cluster" {
   source = "terraform-aws-modules/ecs/aws"
   cluster_name = "demo-boundless"
   cluster_configuration = {
@@ -103,9 +136,12 @@ resource "aws_ecr_repository" "ecr" {
 # ECS Service
 #############################
 
-module "ecs" {
-  source = "git@github.com:PresencePG/presence-devops-module-ecs.git?ref=3.0.1"
+module "ecs-services" {
+  source = "../../modules/ecs"
   lb_enable                   = true
+  fargate_enabled = true
+  assign_public_ip = true
+  
   cpu_limit           = 512
   memory_limit         = 512
   desired_count   = 1
@@ -123,7 +159,6 @@ module "ecs" {
       ssm     = {}
     }
   ]
-  vpc_id              = var.vpc_id
-  vpc_public_subnets  = var.vpc_public_subnets
-  vpc_private_subnets = var.vpc_private_subnets
+  vpc_id              = module.vpc.vpc_id
+  subnets = [module.vpc.private_subnets[0],module.vpc.private_subnets[1],module.vpc.private_subnets[2]]
 }
