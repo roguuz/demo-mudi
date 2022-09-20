@@ -1,0 +1,19 @@
+### Terraform ###
+#zip created by notify-slack
+**/terraform/environments/*/builds
+# Local .terraform directories
+**/.terraform/*
+# .tfstate files
+*.tfstate
+*.tfstate.*
+# Ignore override files as they are usually used to override resources locally and so
+# are not checked in
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+terraform-key.json
+terraform.tfvars
+.terraform*
+# Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
+*tfplan*
