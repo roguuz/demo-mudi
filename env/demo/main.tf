@@ -137,7 +137,7 @@ module "ecs-service" {
   launch_type = "FARGATE"
   fargate_enabled = true
   lb_enable   = true
-  container_port = 80
+  container_port = 3000
   target_group_arn = module.alb.target_group_arns[0]
   assign_public_ip = true
   subnets = [module.vpc.private_subnets[0],module.vpc.private_subnets[1]]
