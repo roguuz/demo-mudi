@@ -159,7 +159,7 @@ module "ecs-service" {
     {
       name       = local.name
       privileged = false
-      image      = local.name
+      image      = "nginx"
       image_tag  = "latest"
       port       = 80
       environment_variables = {
