@@ -7,8 +7,8 @@ module vpc {
   version = "3.2.0"
   cidr = "10.0.0.0/16"
   azs = data.aws_availability_zones.available.names
-  private_subnets = ["10.0.1.0/24","10.0.2.0/24","10.0.3.0/24"]
-  public_subnets =  ["10.0.4.0/24","10.0.5.0/24","10.0.6.0/24"]
+  private_subnets = ["10.0.1.0/24","10.0.2.0/24"]
+  public_subnets =  ["10.0.3.0/24","10.0.4.0/24"]
   enable_nat_gateway = true
   single_nat_gateway = true
   enable_dns_hostnames = true
@@ -77,14 +77,14 @@ module "alb" {
   load_balancer_type = "application"
 
   vpc_id             = module.vpc.vpc_id
-  subnets            = [module.vpc.public_subnets[0],module.vpc.public_subnets[1],module.vpc.public_subnets[2]]
+  subnets            = [module.vpc.public_subnets[0],module.vpc.public_subnets[1]]
   security_groups    = [module.sg-alb.security_group_id]
 
   target_groups = [
     {
       name_prefix      = substr(local.name, 0, 5)
       backend_protocol = "HTTP"
-      backend_port     = 80
+      backend_port     = 3000
       target_type      = "ip"
     }
   ]
@@ -140,10 +140,10 @@ module "ecs-service" {
   container_port = 80
   target_group_arn = module.alb.target_group_arns[0]
   assign_public_ip = true
-  subnets = [module.vpc.private_subnets[0],module.vpc.private_subnets[1],module.vpc.private_subnets[2]]
+  subnets = [module.vpc.private_subnets[0],module.vpc.private_subnets[1]]
   security_groups = [module.sg-ecs.security_group_id]
   cpu_limit           = 512
-  memory_limit         = 512
+  memory_limit         = 1024
   desired_count   = 1
   max_capacity = 5
   min_capacity = 1
