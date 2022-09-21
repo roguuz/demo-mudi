@@ -34,11 +34,7 @@ variable "desired_count" {
   
 }
 
-variable "log_retention_in_dayst" {
-  
-}
-
-variable "ecs_type" {
+variable "log_retention_in_days" {
   
 }
 

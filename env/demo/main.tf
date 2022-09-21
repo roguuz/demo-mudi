@@ -31,19 +31,13 @@ module "sg-ecs" {
   vpc_id      = module.vpc.vpc_id
   egress_cidr_blocks = ["0.0.0.0/0"]
   egress_rules = ["all-all"]
-  ingress_with_cidr_blocks = [
+  ingress_with_source_security_group_id = [
     {
-      from_port   = 32768
-      to_port     = 65535
+      from_port   = 3000
+      to_port     = 3000
       protocol    = "tcp"
-      cidr_blocks = "0.0.0.0/0"
+      source_security_group_id = module.sg-alb.security_group_id
     },
-    {
-      from_port   = 22
-      to_port     = 22
-      protocol    = "tcp"
-      cidr_blocks = "0.0.0.0/0"
-    }
   ]
 }
 
@@ -84,7 +78,7 @@ module "alb" {
 
   vpc_id             = module.vpc.vpc_id
   subnets            = [module.vpc.public_subnets[0],module.vpc.public_subnets[1],module.vpc.public_subnets[2]]
-  security_groups    = [module.sg_alb.security_group_id]
+  security_groups    = [module.sg-alb.security_group_id]
 
   target_groups = [
     {
@@ -138,13 +132,30 @@ resource "aws_ecr_repository" "ecr" {
 
 module "ecs-services" {
   source = "../../modules/ecs"
-  lb_enable                   = true
+  cluster = module.ecs-cluster.cluster_name
+  name = "demo-boundless"
+  launch_type = "FARGATE"
   fargate_enabled = true
+  lb_enable   = true
+  target_group_arn = module.alb.target_group_arns
   assign_public_ip = true
   subnets = [module.vpc.private_subnets[0],module.vpc.private_subnets[1],module.vpc.private_subnets[2]]
+  security_groups = [module.sg-ecs.security_group_id]
   cpu_limit           = 512
   memory_limit         = 512
   desired_count   = 1
+  max_capacity = 5
+  min_capacity = 1
+  scaling_memory_target_value = 90  
+  scaling_cpu_target_value = 70
+  memory_scale_out_cooldown = 300
+  memory_scale_in_cooldown = 120
+  cpu_scale_out_cooldown = 300
+  cpu_scale_in_cooldown = 120
+  log_retention_in_days = 1
+  execution_role_arn = aws_iam_role.task-role.arn
+  task_role_arn = aws_iam_role.task-role.arn
+
   container_task_definition = [
     {
       name       = "demo-boundless"
