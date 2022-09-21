@@ -154,8 +154,6 @@ module "ecs-services" {
   cpu_scale_out_cooldown = 300
   cpu_scale_in_cooldown = 120
   log_retention_in_days = 1
-  execution_role_arn = aws_iam_role.task-role.arn
-  task_role_arn = aws_iam_role.task-role.arn
 
   container_task_definition = [
     {
@@ -166,8 +164,8 @@ module "ecs-services" {
       port       = 80
       environment_variables = {
       }
-      # secrets = { 
-      # }
+      secrets = { 
+      }
       ssm     = {}
     }
   ]
