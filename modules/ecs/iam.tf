@@ -1,5 +1,5 @@
 resource "aws_iam_role" "task_role" {
-  name = "${var.environment}-${var.app_name}-secrets-role"
+  name = "${var.name}-task-role"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
