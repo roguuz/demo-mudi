@@ -130,7 +130,7 @@ resource "aws_ecr_repository" "ecr" {
 # ECS Service
 #############################
 
-module "ecs-services" {
+module "ecs-service" {
   source = "../../modules/ecs"
   cluster = module.ecs-cluster.cluster_name
   name = local.name
@@ -138,7 +138,7 @@ module "ecs-services" {
   fargate_enabled = true
   lb_enable   = true
   container_port = 80
-  target_group_arn = module.alb.target_group_arns
+  target_group_arn = module.alb.target_group_arns[0]
   assign_public_ip = true
   subnets = [module.vpc.private_subnets[0],module.vpc.private_subnets[1],module.vpc.private_subnets[2]]
   security_groups = [module.sg-ecs.security_group_id]
