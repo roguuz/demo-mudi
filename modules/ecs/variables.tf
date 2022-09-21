@@ -42,14 +42,6 @@ variable "cpu_limit" {
   
 }
 
-variable "execution_role_arn" {
-  
-}
-
-variable "task_role_arn" {
-  
-}
-
 variable "cluster" {
   
 }
