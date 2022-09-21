@@ -40,7 +40,7 @@ resource "aws_ecs_service" "svc" {
 
   name            = "${var.name}-svc"
   cluster         = var.cluster
-  task_definition = aws_ecs_task_definition.ecs_task.arn
+  task_definition = aws_ecs_task_definition.td.arn
   desired_count   = var.desired_count
   launch_type     = var.launch_type
   enable_execute_command = var.enable_ecs_execute_command
@@ -49,7 +49,7 @@ resource "aws_ecs_service" "svc" {
     for_each = var.lb_enable ? [1] : []
     content {
       target_group_arn = var.target_group_arn
-      container_name   = aws_ecs_task_definition.ecs_task.family
+      container_name   = aws_ecs_task_definition.td.family
       container_port   = var.container_port
     }
   }
@@ -74,7 +74,7 @@ resource "aws_ecs_service" "svc" {
 
 #   name            = "${var.name}-svc"
 #   cluster         = var.cluster
-#   task_definition = aws_ecs_task_definition.ecs_task.arn
+#   task_definition = aws_ecs_task_definition.td.arn
 #   desired_count   = var.desired_count
 #   launch_type     = var.launch_type
 
@@ -84,7 +84,7 @@ resource "aws_ecs_service" "svc" {
 
 #   load_balancer {
 #     target_group_arn = var.target_group_arn
-#     container_name   = aws_ecs_task_definition.ecs_task.family
+#     container_name   = aws_ecs_task_definition.td.family
 #     container_port   = var.container_port
 #   }
 
