@@ -3,7 +3,7 @@
 ###########################################
 module vpc {
   source = "terraform-aws-modules/vpc/aws"
-  name = "demo-boundless"
+  name = local.name
   version = "3.2.0"
   cidr = "10.0.0.0/16"
   azs = data.aws_availability_zones.available.names
@@ -13,10 +13,10 @@ module vpc {
   single_nat_gateway = true
   enable_dns_hostnames = true
   public_subnet_tags = {
-      "Name" = "demo-boundless-public"
+      "Name" = "${local.name}-public"
   }
   private_subnet_tags = {
-      "Name" = "demo-boundless-private"
+      "Name" = "${local.name}-private"
   }
 }
 
@@ -27,7 +27,7 @@ module "sg-ecs" {
   source = "terraform-aws-modules/security-group/aws"
   version = "4.9.0"
 
-  name        = "demo-ecs-sg"
+  name        = "${local.name}-ecs-sg"
   vpc_id      = module.vpc.vpc_id
   egress_cidr_blocks = ["0.0.0.0/0"]
   egress_rules = ["all-all"]
@@ -45,7 +45,7 @@ module "sg-alb" {
   source = "terraform-aws-modules/security-group/aws"
   version = "4.9.0"
 
-  name        = "demo-alb-sg"
+  name        = "${local.name}-alb-sg"
   vpc_id      = module.vpc.vpc_id
   egress_cidr_blocks = ["0.0.0.0/0"]
   egress_rules = ["all-all"]
@@ -72,7 +72,7 @@ module "alb" {
   source  = "terraform-aws-modules/alb/aws"
   version = "~> 6.0"
 
-  name = "demo-boundless"
+  name = local.name
 
   load_balancer_type = "application"
 
@@ -82,7 +82,7 @@ module "alb" {
 
   target_groups = [
     {
-      name_prefix      = "demo-boundless-tg"
+      name_prefix      = "${local.name}-tg"
       backend_protocol = "HTTP"
       backend_port     = 80
       target_type      = "ip"
@@ -104,12 +104,12 @@ module "alb" {
 
 module "ecs-cluster" {
   source = "terraform-aws-modules/ecs/aws"
-  cluster_name = "demo-boundless"
+  cluster_name = local.name
   cluster_configuration = {
     execute_command_configuration = {
       logging = "OVERRIDE"
       log_configuration = {
-        cloud_watch_log_group_name = "/aws/ecs/cluster/demo-boundless"
+        cloud_watch_log_group_name = "/aws/ecs/cluster/${local.name}"
       }
     }
   }
@@ -119,7 +119,7 @@ module "ecs-cluster" {
 # ECR 
 ###########################################
 resource "aws_ecr_repository" "ecr" {
-  name = "boundless-demo"
+  name = local.name
 
   image_scanning_configuration {
     scan_on_push = false
@@ -133,7 +133,7 @@ resource "aws_ecr_repository" "ecr" {
 module "ecs-services" {
   source = "../../modules/ecs"
   cluster = module.ecs-cluster.cluster_name
-  name = "demo-boundless"
+  name = local.name
   launch_type = "FARGATE"
   fargate_enabled = true
   lb_enable   = true
@@ -157,14 +157,12 @@ module "ecs-services" {
 
   container_task_definition = [
     {
-      name       = "demo-boundless"
+      name       = local.name
       privileged = false
-      image      = "nginx"
+      image      = local.name
       image_tag  = "latest"
-      port       = 80
+      port       = 3000
       environment_variables = {
-      }
-      secrets = { 
       }
       ssm     = {}
     }

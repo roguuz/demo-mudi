@@ -25,18 +25,6 @@ locals {
       value = lookup(task.environment_variables, key)
     }]
 
-    secrets = concat([for key in keys(task.ssm) :{
-      name      = key
-      valueFrom = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${replace(lookup(task.ssm, key), "/^//", "")}"
-    }], [for key in keys(task.secrets) :{
-      name      = key
-      valueFrom = "${lookup(data.aws_secretsmanager_secret.task_secret, split(":",lookup(task.secrets, key))[0]).arn}${
-      length(split(":", lookup(task.secrets, key))) >= 2 ?
-        trimprefix(lookup(task.secrets, key), split(":", lookup(task.secrets, key))[0]):
-        ""
-      }"
-    }])
-
     cpu         = 0
     mountPoints = [for volume in var.container_task_volumes: {
       sourceVolume = volume.name,
