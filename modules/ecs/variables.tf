@@ -26,10 +26,6 @@ variable "container_task_volumes" {
   default     = []
 }
 
-### ECS service variables
-variable "auto_scaling_group_arn" {
-}
-
 variable "desired_count" {
   
 }
