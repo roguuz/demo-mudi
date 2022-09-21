@@ -14,7 +14,7 @@ resource "aws_cloudwatch_log_group" "ecs_log_group" {
 ###########################################
 
 resource "aws_ecs_task_definition" "td" {
-  family                   = "${var.name}-td"
+  family                   = var.name
   container_definitions    = jsonencode(local.container_definition)
   requires_compatibilities = [var.launch_type]
   network_mode             = "awsvpc"
@@ -68,40 +68,6 @@ resource "aws_ecs_service" "svc" {
     ignore_changes = [task_definition]
   }
 }
-
-# resource "aws_ecs_service" "ecs_service_cd" {
-#   count = var.enable_code_deploy && var.lb_enable ? 1 : 0
-
-#   name            = "${var.name}-svc"
-#   cluster         = var.cluster
-#   task_definition = aws_ecs_task_definition.td.arn
-#   desired_count   = var.desired_count
-#   launch_type     = var.launch_type
-
-#   deployment_controller {
-#     type = "CODE_DEPLOY"
-#   }
-
-#   load_balancer {
-#     target_group_arn = var.target_group_arn
-#     container_name   = aws_ecs_task_definition.td.family
-#     container_port   = var.container_port
-#   }
-
-#   network_configuration {
-#     subnets          = var.subnets
-#     assign_public_ip = var.fargate_enabled && var.ecs_public_ip
-#     security_groups  = var.security_groups
-#   }
-
-#   lifecycle {
-#     ignore_changes = [task_definition, load_balancer]
-#   }
-
-#   depends_on = [
-#     aws_ecs_task_definition.td
-#   ]
-# }
 
 #####################
 ### autoscaling cpu

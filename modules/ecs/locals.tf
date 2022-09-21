@@ -1,6 +1,6 @@
 locals {
   container_definition = [for task in var.container_task_definition:{
-    name       = "${task.name}-task"
+    name       = task.name
     image      = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/${task.image}:${task.image_tag}"
     essential  = true
     privileged = task.privileged
