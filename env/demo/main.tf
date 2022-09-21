@@ -33,8 +33,8 @@ module "sg-ecs" {
   egress_rules = ["all-all"]
   ingress_with_source_security_group_id = [
     {
-      from_port   = 3000
-      to_port     = 3000
+      from_port   = 80
+      to_port     = 80
       protocol    = "tcp"
       source_security_group_id = module.sg-alb.security_group_id
     },
@@ -84,7 +84,7 @@ module "alb" {
     {
       name_prefix      = substr(local.name, 0, 5)
       backend_protocol = "HTTP"
-      backend_port     = 3000
+      backend_port     = 80
       target_type      = "ip"
     }
   ]
@@ -137,7 +137,7 @@ module "ecs-service" {
   launch_type = "FARGATE"
   fargate_enabled = true
   lb_enable   = true
-  container_port = 3000
+  container_port = 80
   target_group_arn = module.alb.target_group_arns[0]
   assign_public_ip = true
   subnets = [module.vpc.private_subnets[0],module.vpc.private_subnets[1]]
@@ -161,7 +161,7 @@ module "ecs-service" {
       privileged = false
       image      = local.name
       image_tag  = "latest"
-      port       = 3000
+      port       = 80
       environment_variables = {
       }
       ssm     = {}
