@@ -10,7 +10,6 @@ variable "container_task_definition" {
     privileged            = bool
     port                  = number
     environment_variables = map(string)
-    secrets               = map(string)
     ssm                   = map(string)
   }))
 }
