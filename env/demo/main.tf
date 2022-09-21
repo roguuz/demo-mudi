@@ -82,6 +82,7 @@ module "alb" {
 
   target_groups = [
     {
+      name_prefix      = substr(local.name, 0, 5)
       backend_protocol = "HTTP"
       backend_port     = 80
       target_type      = "ip"
