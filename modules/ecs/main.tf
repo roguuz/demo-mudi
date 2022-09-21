@@ -61,7 +61,7 @@ resource "aws_ecs_service" "svc" {
   }
 
   depends_on = [
-    aws_ecs_task_definition.ecs_task
+    aws_ecs_task_definition.td
   ]
 
   lifecycle {
@@ -99,7 +99,7 @@ resource "aws_ecs_service" "svc" {
 #   }
 
 #   depends_on = [
-#     aws_ecs_task_definition.ecs_task
+#     aws_ecs_task_definition.td
 #   ]
 # }
 
