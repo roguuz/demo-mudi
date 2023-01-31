@@ -1,3 +1,3 @@
 locals {
-  name = "demo-boundless"
+  name = "demo-mudi"
 }
