@@ -33,8 +33,8 @@ module "sg-ecs" {
   egress_rules = ["all-all"]
   ingress_with_source_security_group_id = [
     {
-      from_port   = 9000
-      to_port     = 9000
+      from_port   = 8080
+      to_port     = 8080
       protocol    = "tcp"
       source_security_group_id = module.sg-alb.security_group_id
     },
@@ -84,7 +84,7 @@ module "alb" {
     {
       name_prefix      = substr(local.name, 0, 5)
       backend_protocol = "HTTP"
-      backend_port     = 9000
+      backend_port     = 8080
       target_type      = "ip"
     }
   ]
