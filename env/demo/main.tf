@@ -84,7 +84,7 @@ module "alb" {
     {
       name_prefix      = substr(local.name, 0, 5)
       backend_protocol = "HTTP"
-      backend_port     = 9000
+      backend_port     = 8080
       target_type      = "ip"
     }
   ]
@@ -105,14 +105,14 @@ module "alb" {
 module "ecs-cluster" {
   source = "terraform-aws-modules/ecs/aws"
   cluster_name = local.name
-  cluster_configuration = {
-    execute_command_configuration = {
-      logging = "OVERRIDE"
-      log_configuration = {
-        cloud_watch_log_group_name = "/aws/ecs/cluster/${local.name}"
-      }
-    }
-  }
+  # cluster_configuration = {
+  #   execute_command_configuration = {
+  #     logging = "OVERRIDE"
+  #     log_configuration = {
+  #       cloud_watch_log_group_name = "/aws/ecs/cluster/${local.name}"
+  #     }
+  #   }
+  # }
 }
 
 ###########################################
@@ -134,10 +134,9 @@ module "ecs-service" {
   source = "../../modules/ecs"
   cluster = module.ecs-cluster.cluster_name
   name = local.name
-  launch_type = "FARGATE"
-  fargate_enabled = true
+  # launch_type = "EC2"
   lb_enable   = true
-  container_port = 9000
+  container_port = 8080
   target_group_arn = module.alb.target_group_arns[0]
   assign_public_ip = true
   subnets = [module.vpc.private_subnets[0],module.vpc.private_subnets[1]]
@@ -145,14 +144,14 @@ module "ecs-service" {
   cpu_limit           = 512
   memory_limit         = 1024
   desired_count   = 1
-  max_capacity = 5
-  min_capacity = 1
-  scaling_memory_target_value = 90  
-  scaling_cpu_target_value = 70
-  memory_scale_out_cooldown = 300
-  memory_scale_in_cooldown = 120
-  cpu_scale_out_cooldown = 300
-  cpu_scale_in_cooldown = 120
+  # max_capacity = 5
+  # min_capacity = 1
+  # scaling_memory_target_value = 90  
+  # scaling_cpu_target_value = 70
+  # memory_scale_out_cooldown = 300
+  # memory_scale_in_cooldown = 120
+  # cpu_scale_out_cooldown = 300
+  # cpu_scale_in_cooldown = 120
   log_retention_in_days = 1
 
   container_task_definition = [
@@ -161,10 +160,47 @@ module "ecs-service" {
       privileged = false
       image      = local.name
       image_tag  = "latest"
-      port       = 9000
+      port       = 8080
       environment_variables = {
       }
       ssm     = {}
     }
+  ]
+}
+
+
+###########EC2 Jenkins
+resource "tls_private_key" "jenkins" {
+  algorithm = "RSA"
+}
+
+module "jenkins_key_pair" {
+  source = "terraform-aws-modules/key-pair/aws"
+  version = "1.0.1"
+
+  key_name   = var.jenkins_key_name
+  public_key = tls_private_key.jenkins.public_key_openssh
+  create_key_pair = var.create_jenkins_key_pair
+  depends_on = [tls_private_key.jenkins]
+}
+
+module "ec2-jenkins" {
+  source  = "terraform-aws-modules/ec2-instance/aws"
+  version = "~> 3.0"
+
+  name = local.name
+
+  ami                    = "ami-00b8caf62fc9c2341"
+  instance_type          = "t2.micro"
+  key_name               = module.jenkins_key_pair.key_pair_key_name
+  monitoring             = false
+  vpc_security_group_ids = [module.sg-jenkins.security_group_id,module.sg-ssh.security_group_id]
+  subnet_id              = module.vpc.private_subnets[0]
+  root_block_device = [
+    {
+      volume_type = "gp2"
+      volume_size = 20
+      delete_on_termination = true
+    },
   ]
 }

@@ -42,7 +42,7 @@ resource "aws_ecs_service" "svc" {
   cluster         = var.cluster
   task_definition = aws_ecs_task_definition.td.arn
   desired_count   = var.desired_count
-  launch_type     = var.launch_type
+  # launch_type     = var.launch_type
   enable_execute_command = var.enable_ecs_execute_command
 
   dynamic "load_balancer" {
@@ -73,6 +73,7 @@ resource "aws_ecs_service" "svc" {
 ### autoscaling cpu
 ####################
 resource "aws_appautoscaling_target" "autoscaling" {
+  count = var.enable_autoscaling ? 1 : 0
   max_capacity       = var.max_capacity
   min_capacity       = var.min_capacity
   resource_id        = "service/${var.cluster}/${aws_ecs_service.svc[0].name}"
@@ -101,6 +102,7 @@ resource "aws_appautoscaling_policy" "autoscaling_policy_cpu" {
 ### autoscaling memory
 ###################
 resource "aws_appautoscaling_policy" "search_autoscaling_policy_memory" {
+  count = var.enable_autoscaling ? 1 : 0
   name               = "ECSService-${aws_ecs_service.svc[0].name}-MEMORY"
   policy_type        = "TargetTrackingScaling"
   resource_id        = aws_appautoscaling_target.autoscaling.resource_id

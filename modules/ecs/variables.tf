@@ -46,7 +46,7 @@ variable "cluster" {
 }
 
 variable  "launch_type" {
-  
+  default = "EC2"
 }
 
 variable  "enable_ecs_execute_command" {
@@ -102,11 +102,14 @@ variable  "memory_scale_in_cooldown" {
   
 }
 
-
 variable  "cpu_scale_out_cooldown" {
   
 }
 
 variable  "memory_scale_out_cooldown" {
   
+}
+
+variable "enable_autoscaling" {
+  default = false
 }
