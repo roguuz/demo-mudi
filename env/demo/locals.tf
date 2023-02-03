@@ -29,6 +29,6 @@ locals {
   sudo systemctl daemon-reload
   sudo service jenkins restart
   cd $workdir
-  sudo -H -u ec2-user bash -c 'admin_pass=`sudo cat /var/lib/jenkins/secrets/initialAdminPassword` && plugins=`cat ~/jenkins-config/plugins-list.txt` && java -jar ./jenkins-cli.jar -s "http://localhost:8080" -auth admin:${admin_pass} install-plugin $plugins'
+  sudo -H -u ec2-user bash -c 'admin_pass=`sudo cat /var/lib/jenkins/secrets/initialAdminPassword` && plugins=`cat ~/jenkins-config/plugins-list.txt` && java -jar ./jenkins-cli.jar -s "http://localhost:8080" -auth admin:$admin_pass install-plugin $plugins'
   EOT
 }

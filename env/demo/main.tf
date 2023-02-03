@@ -162,6 +162,42 @@ module "ecs-service" {
 
 
 ###########EC2 Jenkins
+module "sg-ssh" {
+  source = "terraform-aws-modules/security-group/aws"
+  version = "4.9.0"
+
+  name        = "ssh"
+  vpc_id      = module.vpc.vpc_id
+  egress_cidr_blocks = ["0.0.0.0/0"]
+  egress_rules = ["all-all"]
+  ingress_with_cidr_blocks = [
+    {
+      from_port   = 22
+      to_port     = 22
+      protocol    = "tcp"
+      cidr_blocks = "0.0.0.0/0"
+    }
+  ]
+}
+
+module "sg-jenkins" {
+  source = "terraform-aws-modules/security-group/aws"
+  version = "4.9.0"
+
+  name        = "jenkins"
+  vpc_id      = module.vpc.vpc_id
+  egress_cidr_blocks = ["0.0.0.0/0"]
+  egress_rules = ["all-all"]
+  ingress_with_cidr_blocks = [
+    {
+      from_port   = 8080
+      to_port     = 8080
+      protocol    = "tcp"
+      cidr_blocks = "0.0.0.0/0"
+    }
+  ]
+}
+
 resource "tls_private_key" "jenkins" {
   algorithm = "RSA"
 }
