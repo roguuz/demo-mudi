@@ -25,7 +25,7 @@ locals {
   sed 's|\"$||' sudo sed 's|$-Djenkins.install.runSetupWizard=false\"|')|g" /usr/lib/systemd/system/jenkins.service
   sed -i 's|<useSecurity>true</useSecurity>|<useSecurity>false</useSecurity>|g' /var/lib/jenkins/config.xml 
   plugins=$(cat $jenkins_configdir/plugins-list.txt)
-  java -jar ./jenkins-cli.jar -s "http://localhost:8080" -auth admin:${admin_pass} install-plugin $plugins
+  java -jar ./jenkins-cli.jar -s "http://localhost:8080" -auth admin:$admin_pass install-plugin $plugins
   sudo systemctl daemon-reload
   sudo service jenkins restart
   cd $workdir

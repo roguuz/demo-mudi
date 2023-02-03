@@ -170,9 +170,9 @@ module "jenkins_key_pair" {
   source = "terraform-aws-modules/key-pair/aws"
   version = "1.0.1"
 
-  key_name   = var.jenkins_key_name
+  key_name   = "jenkins_key"
   public_key = tls_private_key.jenkins.public_key_openssh
-  create_key_pair = var.create_jenkins_key_pair
+  create_key_pair = true
   depends_on = [tls_private_key.jenkins]
 }
 
