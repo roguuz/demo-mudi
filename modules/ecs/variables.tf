@@ -83,33 +83,3 @@ variable  "enable_code_deploy" {
 variable  "lb_enable" {
   default = false
 }
-variable  "max_capacity" {
-  
-}
-variable  "min_capacity" {
-  
-}
-variable  "scaling_cpu_target_value" {
-  
-}
-variable  "scaling_memory_target_value" {
-  
-}
-variable  "cpu_scale_in_cooldown" {
-  
-}
-variable  "memory_scale_in_cooldown" {
-  
-}
-
-variable  "cpu_scale_out_cooldown" {
-  
-}
-
-variable  "memory_scale_out_cooldown" {
-  
-}
-
-variable "enable_autoscaling" {
-  default = false
-}

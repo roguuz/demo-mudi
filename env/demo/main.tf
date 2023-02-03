@@ -144,15 +144,7 @@ module "ecs-service" {
   cpu_limit           = 512
   memory_limit         = 1024
   desired_count   = 1
-  # max_capacity = 5
-  # min_capacity = 1
-  # scaling_memory_target_value = 90  
-  # scaling_cpu_target_value = 70
-  # memory_scale_out_cooldown = 300
-  # memory_scale_in_cooldown = 120
-  # cpu_scale_out_cooldown = 300
-  # cpu_scale_in_cooldown = 120
-  log_retention_in_days = 1
+  log_retention_in_days = 0
 
   container_task_definition = [
     {
