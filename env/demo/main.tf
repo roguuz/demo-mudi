@@ -196,6 +196,7 @@ module "ec2-jenkins" {
   monitoring             = false
   vpc_security_group_ids = [module.sg-jenkins.security_group_id,module.sg-ssh.security_group_id]
   subnet_id              = module.vpc.private_subnets[0]
+  user_data_base64 = base64encode(local.jenkins_user_data)
   root_block_device = [
     {
       volume_type = "gp2"
