@@ -207,6 +207,14 @@ policy = <<EOF
         "ecr:PutImage",
         "ecr:UploadLayerPart",
         "ecs:*",
+        "ssmmessages:CreateControlChannel",
+        "ssmmessages:CreateDataChannel",
+        "ssmmessages:OpenControlChannel",
+        "ssmmessages:OpenDataChannel",
+        "ssm:UpdateInstanceInformation",
+        "ssm:GetParameter",
+  	"ec2:DescribeInstances",
+	"ec2:StartSession".
             ],
             "Effect": "Allow",
             "Resource": "*"
