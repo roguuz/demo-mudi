@@ -223,7 +223,7 @@ module "ec2-jenkins" {
   key_name               = module.jenkins_key_pair.key_pair_key_name
   monitoring             = false
   vpc_security_group_ids = [module.sg-jenkins.security_group_id,module.sg-ssh.security_group_id]
-  subnet_id              = module.vpc.private_subnets[0]
+  subnet_id              = module.vpc.public_subnets[0]
   user_data_base64 = base64encode(local.jenkins_user_data)
   root_block_device = [
     {
