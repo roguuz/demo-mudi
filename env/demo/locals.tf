@@ -8,6 +8,8 @@ locals {
   cd $workdir
   sudo yum update -y
   sudo amazon-linux-extras install java-openjdk11 -y
+  sudo yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
+  sudo systemctl start amazon-ssm-agent
   sudo tee /etc/yum.repos.d/jenkins.repo<<EOF
   [jenkins]
   name=Jenkins
