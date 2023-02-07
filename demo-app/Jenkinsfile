@@ -17,9 +17,9 @@ pipeline {
                 sh (
                     script: '''
                     mvn clean install
-                    aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 666120933049.dkr.ecr.us-east-1.amazonaws.com
-                    docker build -t 666120933049.dkr.ecr.us-east-1.amazonaws.com/janus-service-driver:${tag} -f docker/Dockerfile .
-                    docker push 666120933049.dkr.ecr.us-east-1.amazonaws.com/janus-service-driver:${tag}
+                    aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 219252656223.dkr.ecr.us-east-1.amazonaws.com
+                    docker build -t 219252656223.dkr.ecr.us-east-1.amazonaws.com/demo-mudi:${tag} .
+                    docker push 219252656223.dkr.ecr.us-east-1.amazonaws.com/demo-mudi:${tag}
                     ''',
                     returnStdout: true
                     )
