@@ -214,7 +214,7 @@ policy = <<EOF
         "ssm:UpdateInstanceInformation",
         "ssm:GetParameter",
   	"ec2:DescribeInstances",
-	"ec2:StartSession".
+	"ec2:StartSession",
             ],
             "Effect": "Allow",
             "Resource": "*"
