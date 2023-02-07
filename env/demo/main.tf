@@ -162,6 +162,59 @@ module "ecs-service" {
 
 
 ###########EC2 Jenkins
+resource "aws_iam_instance_profile" "jenkins" {
+  name = "jenkins-profile"
+  role = aws_iam_role.jenkins.name
+}
+
+resource "aws_iam_role" "jenkins" {
+  name = "jenkins_instance_profile"
+  path = "/"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "jenkins" {
+name = "jenkins"
+role = "${aws_iam_role.jenkins.id}"
+
+policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+        "Action": [
+		    "ecr:GetAuthorizationToken",
+        "ecr:BatchGetImage",
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:CompleteLayerUpload",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:InitiateLayerUpload",
+        "ecr:PutImage",
+        "ecr:UploadLayerPart",
+        "ecs:*",
+            ],
+            "Effect": "Allow",
+            "Resource": "*"
+        }
+    ]
+}
+EOF
+}
 module "sg-ssh" {
   source = "terraform-aws-modules/security-group/aws"
   version = "4.9.0"
@@ -222,6 +275,7 @@ module "ec2-jenkins" {
   instance_type          = "t2.micro"
   key_name               = module.jenkins_key_pair.key_pair_key_name
   monitoring             = false
+  iam_instance_profile = aws_iam_instance_profile.jenkins.name
   vpc_security_group_ids = [module.sg-jenkins.security_group_id,module.sg-ssh.security_group_id]
   subnet_id              = module.vpc.public_subnets[0]
   user_data_base64 = base64encode(local.jenkins_user_data)
