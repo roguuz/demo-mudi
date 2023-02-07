@@ -198,26 +198,26 @@ policy = <<EOF
     "Statement": [
         {
         "Action": [
-		    "ecr:GetAuthorizationToken",
-        "ecr:BatchGetImage",
-        "ecr:BatchCheckLayerAvailability",
-        "ecr:CompleteLayerUpload",
-        "ecr:GetDownloadUrlForLayer",
-        "ecr:InitiateLayerUpload",
-        "ecr:PutImage",
-        "ecr:UploadLayerPart",
-        "ecs:*",
-        "ssmmessages:CreateControlChannel",
-        "ssmmessages:CreateDataChannel",
-        "ssmmessages:OpenControlChannel",
-        "ssmmessages:OpenDataChannel",
-        "ssm:UpdateInstanceInformation",
-        "ssm:GetParameter",
-  	"ec2:DescribeInstances",
-	"ec2:StartSession",
-            ],
-            "Effect": "Allow",
-            "Resource": "*"
+		"ecr:GetAuthorizationToken",
+		"ecr:BatchGetImage",
+		"ecr:BatchCheckLayerAvailability",
+		"ecr:CompleteLayerUpload",
+		"ecr:GetDownloadUrlForLayer",
+		"ecr:InitiateLayerUpload",
+		"ecr:PutImage",
+		"ecr:UploadLayerPart",
+		"ecs:*",
+		"ssmmessages:CreateControlChannel",
+		"ssmmessages:CreateDataChannel",
+		"ssmmessages:OpenControlChannel",
+		"ssmmessages:OpenDataChannel",
+		"ssm:UpdateInstanceInformation",
+		"ssm:GetParameter",
+		"ec2:DescribeInstances",
+		"ec2:StartSession"
+	    ],
+	    "Effect": "Allow",
+	    "Resource": "*"
         }
     ]
 }
