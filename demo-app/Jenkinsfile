@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven'
-        jdk 'JDK8'
+        maven 'maven'
+        jdk 'jdk8'
     }
     environment {
         env = "demo"
@@ -11,8 +11,6 @@ pipeline {
     }
     stages {
         stage('Build') {
-            environment {
-            }
             steps {
                 sh (
                     script: '''

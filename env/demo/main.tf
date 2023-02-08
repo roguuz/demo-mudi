@@ -20,145 +20,145 @@ module vpc {
   }
 }
 
-###########################################
-# SECURITY GROUPS
-###########################################
-module "sg-ecs" {
-  source = "terraform-aws-modules/security-group/aws"
-  version = "4.9.0"
+# ###########################################
+# # SECURITY GROUPS
+# ###########################################
+# module "sg-ecs" {
+#   source = "terraform-aws-modules/security-group/aws"
+#   version = "4.9.0"
 
-  name        = "${local.name}-ecs-sg"
-  vpc_id      = module.vpc.vpc_id
-  egress_cidr_blocks = ["0.0.0.0/0"]
-  egress_rules = ["all-all"]
-  ingress_with_source_security_group_id = [
-    {
-      from_port   = 9000
-      to_port     = 9000
-      protocol    = "tcp"
-      source_security_group_id = module.sg-alb.security_group_id
-    },
-  ]
-}
+#   name        = "${local.name}-ecs-sg"
+#   vpc_id      = module.vpc.vpc_id
+#   egress_cidr_blocks = ["0.0.0.0/0"]
+#   egress_rules = ["all-all"]
+#   ingress_with_source_security_group_id = [
+#     {
+#       from_port   = 9000
+#       to_port     = 9000
+#       protocol    = "tcp"
+#       source_security_group_id = module.sg-alb.security_group_id
+#     },
+#   ]
+# }
 
-module "sg-alb" {
-  source = "terraform-aws-modules/security-group/aws"
-  version = "4.9.0"
+# module "sg-alb" {
+#   source = "terraform-aws-modules/security-group/aws"
+#   version = "4.9.0"
 
-  name        = "${local.name}-alb-sg"
-  vpc_id      = module.vpc.vpc_id
-  egress_cidr_blocks = ["0.0.0.0/0"]
-  egress_rules = ["all-all"]
-  ingress_with_cidr_blocks = [
-    {
-      from_port   = 80
-      to_port     = 80
-      protocol    = "tcp"
-      cidr_blocks = "0.0.0.0/0"
-    },
-    {
-      from_port   = 443
-      to_port     = 443
-      protocol    = "tcp"
-      cidr_blocks = "0.0.0.0/0"
-    }
-  ]
-}
+#   name        = "${local.name}-alb-sg"
+#   vpc_id      = module.vpc.vpc_id
+#   egress_cidr_blocks = ["0.0.0.0/0"]
+#   egress_rules = ["all-all"]
+#   ingress_with_cidr_blocks = [
+#     {
+#       from_port   = 80
+#       to_port     = 80
+#       protocol    = "tcp"
+#       cidr_blocks = "0.0.0.0/0"
+#     },
+#     {
+#       from_port   = 443
+#       to_port     = 443
+#       protocol    = "tcp"
+#       cidr_blocks = "0.0.0.0/0"
+#     }
+#   ]
+# }
 
-###############################
-# Application Load Balancer
-###############################
-module "alb" {
-  source  = "terraform-aws-modules/alb/aws"
-  version = "~> 6.0"
+# ###############################
+# # Application Load Balancer
+# ###############################
+# module "alb" {
+#   source  = "terraform-aws-modules/alb/aws"
+#   version = "~> 6.0"
 
-  name = local.name
+#   name = local.name
 
-  load_balancer_type = "application"
+#   load_balancer_type = "application"
 
-  vpc_id             = module.vpc.vpc_id
-  subnets            = [module.vpc.public_subnets[0],module.vpc.public_subnets[1]]
-  security_groups    = [module.sg-alb.security_group_id]
+#   vpc_id             = module.vpc.vpc_id
+#   subnets            = [module.vpc.public_subnets[0],module.vpc.public_subnets[1]]
+#   security_groups    = [module.sg-alb.security_group_id]
 
-  target_groups = [
-    {
-      name_prefix      = substr(local.name, 0, 5)
-      backend_protocol = "HTTP"
-      backend_port     = 8080
-      target_type      = "ip"
-    }
-  ]
+#   target_groups = [
+#     {
+#       name_prefix      = substr(local.name, 0, 5)
+#       backend_protocol = "HTTP"
+#       backend_port     = 8080
+#       target_type      = "ip"
+#     }
+#   ]
 
-  http_tcp_listeners = [
-    {
-      port               = 80
-      protocol           = "HTTP"
-      target_group_index = 0
-    }
-  ]
-}
+#   http_tcp_listeners = [
+#     {
+#       port               = 80
+#       protocol           = "HTTP"
+#       target_group_index = 0
+#     }
+#   ]
+# }
 
-###########################################
-# ECS CLUSTER
-###########################################
+# ###########################################
+# # ECS CLUSTER
+# ###########################################
 
-module "ecs-cluster" {
-  source = "terraform-aws-modules/ecs/aws"
-  cluster_name = local.name
-  # cluster_configuration = {
-  #   execute_command_configuration = {
-  #     logging = "OVERRIDE"
-  #     log_configuration = {
-  #       cloud_watch_log_group_name = "/aws/ecs/cluster/${local.name}"
-  #     }
-  #   }
-  # }
-}
+# module "ecs-cluster" {
+#   source = "terraform-aws-modules/ecs/aws"
+#   cluster_name = local.name
+#   # cluster_configuration = {
+#   #   execute_command_configuration = {
+#   #     logging = "OVERRIDE"
+#   #     log_configuration = {
+#   #       cloud_watch_log_group_name = "/aws/ecs/cluster/${local.name}"
+#   #     }
+#   #   }
+#   # }
+# }
 
-###########################################
-# ECR 
-###########################################
-resource "aws_ecr_repository" "ecr" {
-  name = local.name
+# ###########################################
+# # ECR 
+# ###########################################
+# resource "aws_ecr_repository" "ecr" {
+#   name = local.name
 
-  image_scanning_configuration {
-    scan_on_push = false
-  }
-}
+#   image_scanning_configuration {
+#     scan_on_push = false
+#   }
+# }
 
-#############################
-# ECS Service
-#############################
+# #############################
+# # ECS Service
+# #############################
 
-module "ecs-service" {
-  source = "../../modules/ecs"
-  cluster = module.ecs-cluster.cluster_name
-  name = local.name
-  # launch_type = "EC2"
-  lb_enable   = true
-  container_port = 8080
-  target_group_arn = module.alb.target_group_arns[0]
-  assign_public_ip = true
-  subnets = [module.vpc.private_subnets[0],module.vpc.private_subnets[1]]
-  security_groups = [module.sg-ecs.security_group_id]
-  cpu_limit           = 512
-  memory_limit         = 1024
-  desired_count   = 1
-  log_retention_in_days = 0
+# module "ecs-service" {
+#   source = "../../modules/ecs"
+#   cluster = module.ecs-cluster.cluster_name
+#   name = local.name
+#   # launch_type = "EC2"
+#   lb_enable   = true
+#   container_port = 8080
+#   target_group_arn = module.alb.target_group_arns[0]
+#   assign_public_ip = true
+#   subnets = [module.vpc.private_subnets[0],module.vpc.private_subnets[1]]
+#   security_groups = [module.sg-ecs.security_group_id]
+#   cpu_limit           = 512
+#   memory_limit         = 1024
+#   desired_count   = 1
+#   log_retention_in_days = 0
 
-  container_task_definition = [
-    {
-      name       = local.name
-      privileged = false
-      image      = local.name
-      image_tag  = "latest"
-      port       = 8080
-      environment_variables = {
-      }
-      ssm     = {}
-    }
-  ]
-}
+#   container_task_definition = [
+#     {
+#       name       = local.name
+#       privileged = false
+#       image      = local.name
+#       image_tag  = "latest"
+#       port       = 8080
+#       environment_variables = {
+#       }
+#       ssm     = {}
+#     }
+#   ]
+# }
 
 
 ###########EC2 Jenkins

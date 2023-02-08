@@ -7,7 +7,7 @@ locals {
   workdir="/home/ec2-user"
   cd $workdir
   sudo yum update -y
-  sudo amazon-linux-extras install java-openjdk11 -y
+  sudo amazon-linux-extras install java-openjdk11 git -y
   sudo curl -Lo /usr/local/bin/ecs-cli https://amazon-ecs-cli.s3.amazonaws.com/ecs-cli-linux-amd64-latest
   sudo tee /etc/yum.repos.d/jenkins.repo<<EOF
   [jenkins]
