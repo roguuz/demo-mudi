@@ -7,7 +7,8 @@ locals {
   workdir="/home/ec2-user"
   cd $workdir
   sudo yum update -y
-  sudo amazon-linux-extras install java-openjdk11 git -y
+  sudo amazon-linux-extras install java-openjdk11 -y
+  sudo yum install -y git
   sudo curl -Lo /usr/local/bin/ecs-cli https://amazon-ecs-cli.s3.amazonaws.com/ecs-cli-linux-amd64-latest
   sudo tee /etc/yum.repos.d/jenkins.repo<<EOF
   [jenkins]
@@ -22,14 +23,10 @@ locals {
   sudo systemctl enable jenkins
   admin_pass=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)
   wget http://localhost:8080/jnlpJars/jenkins-cli.jar
-  sudo sed -i "s|Environment.*=.*JAVA_OPTS.*\"|$(sudo grep 'Environment.*=.*JAVA_OPTS' /usr/lib/systemd/system/jenkins.service \
-  sed 's|\"$||' sudo sed 's|$-Djenkins.install.runSetupWizard=false\"|')|g" /usr/lib/systemd/system/jenkins.service
-  sed -i 's|<useSecurity>true</useSecurity>|<useSecurity>false</useSecurity>|g' /var/lib/jenkins/config.xml 
-  plugins=$(cat $jenkins_configdir/plugins-list.txt)
+  plugins="javax-activation-api ws-cleanup javax-mail-api jjwt-api sshd cloudbees-folder antisamy-markup-formatter structs ant workflow-step-api token-macro build-timeout handlebars credentials trilead-api workflow-cps ssh-credentials plain-credentials workflow-job credentials-binding momentjs scm-api workflow-api timestamper caffeine-api script-security mailer plugin-util-api font-awesome-api popper-api jsch jquery3-api workflow-basic-steps bootstrap4-api snakeyaml-api jackson2-api git-client popper2-api gradle bootstrap5-api echarts-api pipeline-milestone-step display-url-api workflow-support git-server checks-api junit matrix-project pipeline-input-step resource-disposer durable-task workflow-scm-step workflow-durable-task-step branch-api jdk-tool command-launcher pipeline-stage-step bouncycastle-api ace-editor apache-httpcomponents-client-4-api role-strategy pipeline-graph-analysis pipeline-rest-api pipeline-stage-view pipeline-build-step pipeline-model-api pipeline-model-extensions ssh workflow-cps-global-lib workflow-multibranch pipeline-stage-tags-metadata pipeline-model-definition lockable-resources workflow-aggregator okhttp-api github-api git github github-branch-source pipeline-github-lib ssh-slaves matrix-auth jnr-posix-api pam-auth ldap email-ext config-file-provider nodejs javadoc maven-plugin run-condition conditional-buildstep envinject-api envinject parameterized-trigger windows-slaves external-monitor-job built-on-column jenkins-multijob-plugin jquery git-parameter"
   java -jar ./jenkins-cli.jar -s "http://localhost:8080" -auth admin:$admin_pass install-plugin $plugins
-  sudo systemctl daemon-reload
   sudo service jenkins restart
-  cd $workdir
-  sudo -H -u ec2-user bash -c 'admin_pass=`sudo cat /var/lib/jenkins/secrets/initialAdminPassword` && plugins=`cat ~/jenkins-config/plugins-list.txt` && java -jar ./jenkins-cli.jar -s "http://localhost:8080" -auth admin:$admin_pass install-plugin $plugins'
+  # cd $workdir
+  # sudo -H -u ec2-user bash -c 'admin_pass=`sudo cat /var/lib/jenkins/secrets/initialAdminPassword` && plugins=`cat ~/jenkins-config/plugins-list.txt` && java -jar ./jenkins-cli.jar -s "http://localhost:8080" -auth admin:$admin_pass install-plugin $plugins'
   EOT
 }
