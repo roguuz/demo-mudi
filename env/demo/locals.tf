@@ -7,7 +7,7 @@ locals {
   workdir="/home/ec2-user"
   cd $workdir
   sudo yum update -y
-  sudo amazon-linux-extras install java-17-amazon-corretto-headless -y
+  sudo amazon-linux-extras install java-17-amazon-corretto-headless java-openjdk11 -y
   sudo yum install -y git docker
   sudo curl -Lo /usr/local/bin/ecs-cli https://amazon-ecs-cli.s3.amazonaws.com/ecs-cli-linux-amd64-latest
   sudo tee /etc/yum.repos.d/jenkins.repo<<EOF
