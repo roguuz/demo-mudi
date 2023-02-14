@@ -198,14 +198,7 @@ policy = <<EOF
     "Statement": [
         {
         "Action": [
-		"ecr:GetAuthorizationToken",
-		"ecr:BatchGetImage",
-		"ecr:BatchCheckLayerAvailability",
-		"ecr:CompleteLayerUpload",
-		"ecr:GetDownloadUrlForLayer",
-		"ecr:InitiateLayerUpload",
-		"ecr:PutImage",
-		"ecr:UploadLayerPart",
+		"ecr:*",
 		"ecs:*",
 		"ssmmessages:CreateControlChannel",
 		"ssmmessages:CreateDataChannel",
