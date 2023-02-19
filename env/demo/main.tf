@@ -33,8 +33,8 @@ module "sg-ecs" {
   egress_rules = ["all-all"]
   ingress_with_source_security_group_id = [
     {
-      from_port   = 9000
-      to_port     = 9000
+      from_port   = 8080
+      to_port     = 8080
       protocol    = "tcp"
       source_security_group_id = module.sg-alb.security_group_id
     },
@@ -159,7 +159,6 @@ module "ecs-service" {
     }
   ]
 }
-
 
 ###########EC2 Jenkins
 resource "aws_iam_instance_profile" "jenkins" {
