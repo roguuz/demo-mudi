@@ -4,7 +4,7 @@ terraform {
     organization = "demo-boundless"
 
     workspaces {
-      name = "demo-boundless"
+      name = "demo-mudi"
     }
   }
 }
