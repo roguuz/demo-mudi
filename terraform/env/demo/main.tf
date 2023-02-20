@@ -266,13 +266,27 @@ module "jenkins_key_pair" {
   depends_on = [tls_private_key.jenkins]
 }
 
+data "aws_ami" "amazon-linux-2" {
+  most_recent = true
+
+  filter {
+    name   = "owner-alias"
+    values = ["amazon"]
+  }
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-ebs"]
+  }
+}
+
 module "ec2-jenkins" {
   source  = "terraform-aws-modules/ec2-instance/aws"
   version = "4.3.0"
 
   name = local.name
 
-  ami                    = "ami-00b8caf62fc9c2341"
+  ami                    = data.aws_ami.amazon-linux-2.id
   instance_type          = "t2.micro"
   key_name               = module.jenkins_key_pair.key_pair_key_name
   monitoring             = false
