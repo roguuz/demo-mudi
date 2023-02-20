@@ -1,7 +1,7 @@
 terraform {
   backend "remote" {
     hostname = "app.terraform.io"
-    organization = "demo-boundless"
+    organization = "upw-demos"
 
     workspaces {
       name = "demo-mudi"
