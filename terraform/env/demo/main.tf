@@ -23,23 +23,23 @@ module vpc {
 # ###########################################
 # # SECURITY GROUPS
 # ###########################################
-module "sg-ecs" {
-  source = "terraform-aws-modules/security-group/aws"
-  version = "4.9.0"
+# module "sg-ecs" {
+#   source = "terraform-aws-modules/security-group/aws"
+#   version = "4.9.0"
 
-  name        = "${local.name}-ecs-sg"
-  vpc_id      = module.vpc.vpc_id
-  egress_cidr_blocks = ["0.0.0.0/0"]
-  egress_rules = ["all-all"]
-  ingress_with_source_security_group_id = [
-    {
-      from_port   = 9000
-      to_port     = 9000
-      protocol    = "tcp"
-      source_security_group_id = module.sg-alb.security_group_id
-    },
-  ]
-}
+#   name        = "${local.name}-ecs-sg"
+#   vpc_id      = module.vpc.vpc_id
+#   egress_cidr_blocks = ["0.0.0.0/0"]
+#   egress_rules = ["all-all"]
+#   ingress_with_source_security_group_id = [
+#     {
+#       from_port   = 9000
+#       to_port     = 9000
+#       protocol    = "tcp"
+#       source_security_group_id = module.sg-alb.security_group_id
+#     },
+#   ]
+# }
 
 # module "sg-alb" {
 #   source = "terraform-aws-modules/security-group/aws"
