@@ -134,7 +134,7 @@ module "ecs-service" {
   source = "../../modules/ecs"
   cluster = module.ecs-cluster.cluster_name
   name = local.name
-  user_data = loca.ecs_user_data
+  user_data = local.ecs_user_data
   # launch_type = "EC2"
   lb_enable   = true
   container_port = 8080
