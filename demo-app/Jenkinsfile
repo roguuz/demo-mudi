@@ -6,7 +6,11 @@ pipeline {
     }
     environment {
         env = "demo"
+        app_name = "demo-mudi"
         tag = "${emv}_${BUILD_ID}"
+        region = "us-west-1"
+        ecr_repo = "219252656223.dkr.ecr.us-west-1.amazonaws.com"
+        cluster = "demo-mudi"
     }
     stages {
         stage('Build') {
@@ -15,9 +19,9 @@ pipeline {
                     script: '''
                     cd demo-app
                     mvn clean install
-                    aws ecr get-login-password --region us-west-1 | docker login --username AWS --password-stdin 219252656223.dkr.ecr.us-west-1.amazonaws.com
-                    docker build -t 219252656223.dkr.ecr.us-west-1.amazonaws.com/demo-mudi:${tag} .
-                    docker push 219252656223.dkr.ecr.us-west-1.amazonaws.com/demo-mudi:${tag}
+                    aws ecr get-login-password --region ${region} | docker login --username AWS --password-stdin ${ecr_repo}
+                    docker build -t ${ecr_repo}/${app_name}:${tag} .
+                    docker push ${ecr_repo}/${app_name}:${tag}
                     ''',
                     returnStdout: true
                     )
@@ -27,8 +31,8 @@ pipeline {
             steps{
                 sh (
                     script: '''
-                    TASK_DEF=$(aws ecs register-task-definition --family demo-mudi --container-definitions '[{"name": "demo-app","image": "219252656223.dkr.ecr.us-west-1.amazonaws.com/demo-mudi:${tag}"}]' --query 'taskDefinition.revision')
-                    aws ecs update-service --cluster demo-mudi --service demo-mudi --task-definition demo-mudi:$TASK_DEF
+                    TASK_DEF=$(aws ecs register-task-definition --region ${region} --family ${app_name} --container-definitions '[{"name": "demo-app","image": "${ecr_repo}/${app_name}:${tag}"}]' --query 'taskDefinition.revision')
+                    aws ecs update-service --cluster ${cluster} --region ${region} --service ${app_name} --task-definition ${app_name}:$TASK_DEF
                     echo "deployed!"
                     ''',
                     returnStdout: true
