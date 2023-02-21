@@ -110,7 +110,7 @@ resource "aws_autoscaling_group" "this" {
   }
   availability_zones = var.availability_zones
   max_size = 1
-  min_size = 1
+  min_size = 0
   desired_capacity = 0
   termination_policies = ["OldestInstance"]
 }
