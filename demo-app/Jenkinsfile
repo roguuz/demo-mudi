@@ -12,6 +12,7 @@ pipeline {
         ecr_repo = "219252656223.dkr.ecr.us-west-1.amazonaws.com"
         cluster = "demo-mudi"
         memory = "1024"
+        port = 8080
     }
     stages {
         stage('Build') {
@@ -33,7 +34,7 @@ pipeline {
                 sh (
                     script: '''
                     IMAGE=${ecr_repo}/${app_name}:${tag}
-                    TASK_DEF=$(aws ecs register-task-definition --region ${region} --family ${app_name} --container-definitions '[{"name": "'${app_name}'", "image": "'${IMAGE}'"}]' --memory ${memory} --query 'taskDefinition.revision')
+                    TASK_DEF=$(aws ecs register-task-definition --region ${region} --family ${app_name} --container-definitions '[{"name": "'${app_name}'", "image": "'${IMAGE}'", "portMappings": [{"containerPort": '${port}', "hostPort": '${port}',"protocol": "tcp"}] }]' --memory ${memory} --query 'taskDefinition.revision')
                     aws ecs update-service --cluster ${cluster} --region ${region} --service ${app_name}-svc --task-definition ${app_name}:$TASK_DEF
                     echo "deployed!"
                     ''',
