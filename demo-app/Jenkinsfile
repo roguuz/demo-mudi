@@ -15,9 +15,9 @@ pipeline {
                     script: '''
                     cd demo-app
                     mvn clean install
-                    aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 219252656223.dkr.ecr.us-east-1.amazonaws.com
-                    docker build -t 219252656223.dkr.ecr.us-east-1.amazonaws.com/demo-mudi:${tag} .
-                    docker push 219252656223.dkr.ecr.us-east-1.amazonaws.com/demo-mudi:${tag}
+                    aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 219252656223.dkr.ecr.us-west-1.amazonaws.com
+                    docker build -t 219252656223.dkr.ecr.us-west-1.amazonaws.com/demo-mudi:${tag} .
+                    docker push 219252656223.dkr.ecr.us-west-1.amazonaws.com/demo-mudi:${tag}
                     ''',
                     returnStdout: true
                     )
@@ -27,7 +27,7 @@ pipeline {
             steps{
                 sh (
                     script: '''
-                    TASK_DEF=$(aws ecs register-task-definition --family demo-mudi --container-definitions '[{"name": "<container_name>","image": "219252656223.dkr.ecr.us-east-1.amazonaws.com/demo-mudi:${tag}"}]' --query 'taskDefinition.revision')
+                    TASK_DEF=$(aws ecs register-task-definition --family demo-mudi --container-definitions '[{"name": "<container_name>","image": "219252656223.dkr.ecr.us-west-1.amazonaws.com/demo-mudi:${tag}"}]' --query 'taskDefinition.revision')
                     aws ecs update-service --cluster demo-mudi --service demo-mudi --task-definition demo-mudi:$TASK_DEF
                     echo "deployed!"
                     ''',
