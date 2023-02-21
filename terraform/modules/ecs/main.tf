@@ -83,13 +83,6 @@ resource "aws_launch_template" "this" {
   user_data =base64encode(var.user_data)
 
 
-  # Network interfaces
-  network_interfaces {
-    associate_public_ip_address = true
-    delete_on_termination = true
-    security_groups = var.security_groups
-  }
-
 }
 
 
