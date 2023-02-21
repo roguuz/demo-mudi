@@ -80,10 +80,7 @@ resource "aws_launch_template" "this" {
   instance_type = "t2.micro"
 
   # User data script to run on instances at launch
-  user_data = <<-EOF
-    #!/bin/bash
-    echo 'ECS_CLUSTER=${var.cluster}' >> /etc/ecs/ecs.config
-  EOF
+  user_data = var.user_data
 
   # Block device mapping
   block_device_mappings {

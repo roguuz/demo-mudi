@@ -1,5 +1,9 @@
 locals {
   name = "demo-mudi"
+  ecs_user_data = <<-EOF
+    #!/bin/bash
+    echo ECS_CLUSTER=${local.name} >> /etc/ecs/ecs.config
+  EOF
   jenkins_user_data = <<-EOT
   #!/bin/bash
   set -x
