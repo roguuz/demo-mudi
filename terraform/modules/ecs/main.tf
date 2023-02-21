@@ -54,7 +54,7 @@ resource "aws_ecs_service" "svc" {
     }
   }
 
-  capacity_provider_strategy = {
+  capacity_provider_strategy {
       capacity_provider = resource.capacity_provider.this.name
       weight            = 1
       base              = 0
@@ -127,7 +127,6 @@ resource "aws_autoscaling_group" "this" {
     id = aws_launch_template.this.id
     version = "$Latest"
   }
-  health_check_grace_period_seconds = 300
   max_size = 1
   min_size = 1
   desired_capacity = 0
