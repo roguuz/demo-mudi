@@ -27,7 +27,7 @@ pipeline {
             steps{
                 sh (
                     script: '''
-                    TASK_DEF=$(aws ecs register-task-definition --family demo-mudi --container-definitions '[{"name": "<container_name>","image": "219252656223.dkr.ecr.us-west-1.amazonaws.com/demo-mudi:${tag}"}]' --query 'taskDefinition.revision')
+                    TASK_DEF=$(aws ecs register-task-definition --family demo-mudi --container-definitions '[{"name": "demo-app","image": "219252656223.dkr.ecr.us-west-1.amazonaws.com/demo-mudi:${tag}"}]' --query 'taskDefinition.revision')
                     aws ecs update-service --cluster demo-mudi --service demo-mudi --task-definition demo-mudi:$TASK_DEF
                     echo "deployed!"
                     ''',
