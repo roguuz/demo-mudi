@@ -34,12 +34,7 @@ pipeline {
                 sh (
                     script: '''
                     IMAGE=${ecr_repo}/${app_name}:${tag}
-                    TASK_DEF=$(aws ecs register-task-definition \
-                    --region ${region} --family ${app_name}  \ 
-                    --container-definitions \ 
-                    '[{"name": "'${app_name}'", "image": "'${IMAGE}'", \
-                    "portMappings": [{"containerPort": '${port}', "hostPort": 0,"protocol": "tcp"}] }]' \ 
-                    --memory ${memory} --query 'taskDefinition.revision')
+                    TASK_DEF=$(aws ecs register-task-definition --region ${region} --family ${app_name} --container-definitions '[{"name": "'${app_name}'", "image": "'${IMAGE}'", "portMappings": [{"containerPort": '${port}', "hostPort": 0,"protocol": "tcp"}] }]' --memory ${memory} --query 'taskDefinition.revision')
                     aws ecs update-service --cluster ${cluster} --region ${region} --service ${app_name}-svc --task-definition ${app_name}:$TASK_DEF
                     echo "deployed!"
                     ''',
