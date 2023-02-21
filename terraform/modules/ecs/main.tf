@@ -54,13 +54,11 @@ resource "aws_ecs_service" "svc" {
     }
   }
 
-  capacity_provider_strategy = [
-    {
+  capacity_provider_strategy = {
       capacity_provider = resource.capacity_provider.this.name
       weight            = 1
       base              = 0
     }
-  ]
   network_configuration {
     subnets          = var.subnets
     assign_public_ip = var.fargate_enabled && var.assign_public_ip
@@ -129,8 +127,6 @@ resource "aws_autoscaling_group" "this" {
     id = aws_launch_template.this.id
     version = "$Latest"
   }
-  target_group_arns = [aws_lb_target_group.example.arn]
-  vpc_zone_identifier = [aws_subnet.example.id]
   health_check_grace_period_seconds = 300
   max_size = 1
   min_size = 1
