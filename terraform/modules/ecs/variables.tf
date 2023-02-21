@@ -86,3 +86,7 @@ variable  "lb_enable" {
 variable "user_data" {
   
 }
+
+variable "availability_zones" {
+  
+}

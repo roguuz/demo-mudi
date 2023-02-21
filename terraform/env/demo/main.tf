@@ -146,6 +146,7 @@ module "ecs-service" {
   memory_limit         = 1024
   desired_count   = 1
   log_retention_in_days = 0
+  availability_zones = data.aws_availability_zones.available.names
 
   container_task_definition = [
     {

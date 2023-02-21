@@ -124,6 +124,7 @@ resource "aws_autoscaling_group" "this" {
     id = aws_launch_template.this.id
     version = "$Latest"
   }
+  availability_zones = var.availability_zones
   max_size = 1
   min_size = 1
   desired_capacity = 0
