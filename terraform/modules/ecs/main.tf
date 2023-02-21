@@ -99,7 +99,7 @@ resource "aws_launch_template" "this" {
   network_interfaces {
     associate_public_ip_address = true
     delete_on_termination = true
-    security_groups = [var.security_groups]
+    security_groups = var.security_groups
   }
 
 }
