@@ -83,7 +83,3 @@ variable  "enable_code_deploy" {
 variable  "lb_enable" {
   default = false
 }
-
-variable "vpc_id" {
-  
-}
