@@ -82,15 +82,6 @@ resource "aws_launch_template" "this" {
   # User data script to run on instances at launch
   user_data =base64encode(var.user_data)
 
-  # Block device mapping
-  block_device_mappings {
-    device_name = "/dev/xvda"
-    ebs {
-      volume_size = 8
-      volume_type = "gp2"
-      delete_on_termination = true
-    }
-  }
 
   # Network interfaces
   network_interfaces {
