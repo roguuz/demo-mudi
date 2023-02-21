@@ -7,7 +7,7 @@ pipeline {
     environment {
         env = "demo"
         app_name = "demo-mudi"
-        tag = "${emv}_${BUILD_ID}"
+        tag = "${env}_${BUILD_ID}"
         region = "us-west-1"
         ecr_repo = "219252656223.dkr.ecr.us-west-1.amazonaws.com"
         cluster = "demo-mudi"
