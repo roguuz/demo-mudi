@@ -54,6 +54,13 @@ resource "aws_ecs_service" "svc" {
     }
   }
 
+  capacity_provider_strategy = [
+    {
+      capacity_provider = resource.capacity_provider.this.name
+      weight            = 1
+      base              = 0
+    }
+  ]
   network_configuration {
     subnets          = var.subnets
     assign_public_ip = var.fargate_enabled && var.assign_public_ip
@@ -68,3 +75,67 @@ resource "aws_ecs_service" "svc" {
     ignore_changes = [task_definition]
   }
 }
+
+resource "aws_launch_template" "this" {
+  name_prefix = "${var.name}-tmplt"
+  image_id = data.aws_ami.ecs_ami.id
+  instance_type = "t2.micro"
+
+  # User data script to run on instances at launch
+  user_data = <<-EOF
+    #!/bin/bash
+    echo 'ECS_CLUSTER=${var.cluster}' >> /etc/ecs/ecs.config
+  EOF
+
+  # Block device mapping
+  block_device_mappings {
+    device_name = "/dev/xvda"
+    ebs {
+      volume_size = 8
+      volume_type = "gp2"
+      delete_on_termination = true
+    }
+  }
+
+  # Network interfaces
+  network_interfaces {
+    associate_public_ip_address = true
+    delete_on_termination = true
+    security_groups = [var.security_groups]
+  }
+
+}
+
+
+resource "aws_ecs_capacity_provider" "this" {
+  name = "${var.name}-cap-prv"
+
+  auto_scaling_group_provider {
+    auto_scaling_group_arn = aws_autoscaling_group.this.arn
+    
+    managed_termination_protection = "DISABLED"
+    managed_scaling {
+      maximum_scaling_step_size = 1
+      minimum_scaling_step_size = 2
+      status = "ENABLED"
+      target_capacity = 100
+    }
+  }
+}
+
+resource "aws_autoscaling_group" "this" {
+  name = "${var.name}-asg"
+  launch_template {
+    id = aws_launch_template.this.id
+    version = "$Latest"
+  }
+  target_group_arns = [aws_lb_target_group.example.arn]
+  vpc_zone_identifier = [aws_subnet.example.id]
+  health_check_grace_period_seconds = 300
+  max_size = 1
+  min_size = 1
+  desired_capacity = 0
+  termination_policies = ["OldestInstance"]
+}
+
+
