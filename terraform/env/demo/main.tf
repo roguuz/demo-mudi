@@ -149,6 +149,7 @@ resource "aws_ecr_repository" "ecr" {
   image_scanning_configuration {
     scan_on_push = false
   }
+  force_delete = true
 }
 
 #############################
@@ -168,7 +169,7 @@ module "ecs-service" {
   assign_public_ip = true
   subnets = [module.vpc.private_subnets[0],module.vpc.private_subnets[1]]
   security_groups = [module.sg-ecs.security_group_id]
-  desired_count   = 1
+  desired_count   = 0
   log_retention_in_days = 1
   availability_zones = data.aws_availability_zones.available.names
 
@@ -177,7 +178,7 @@ module "ecs-service" {
       name       = local.name
       privileged = false
       image      = "non-existing"
-      memoryReservation = 128
+      memoryReservation = 64
       image_tag  = "latest"
       port       = 8080
       environment_variables = {
@@ -311,7 +312,7 @@ module "ec2-jenkins" {
   source  = "terraform-aws-modules/ec2-instance/aws"
   version = "4.3.0"
 
-  name = local.name
+  name = "${local.name}-jenkins"
 
   ami                    = data.aws_ami.amazon-linux-2.id
   instance_type          = "t2.micro"
