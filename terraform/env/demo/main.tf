@@ -145,7 +145,7 @@ module "ecs-service" {
   cluster = module.ecs-cluster.cluster_name
   name = local.name
   user_data = local.ecs_user_data
-  # launch_type = "EC2"
+  launch_type = "EC2"
   capacity_provider = module.ecs-cluster.autoscaling_capacity_providers["one"].name
   lb_enable   = true
   container_port = 8080
@@ -163,7 +163,7 @@ module "ecs-service" {
     {
       name       = local.name
       privileged = false
-      image      = local.name
+      image      = nginx
       image_tag  = "latest"
       port       = 8080
       environment_variables = {
