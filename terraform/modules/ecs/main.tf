@@ -59,11 +59,11 @@ resource "aws_ecs_service" "svc" {
       weight            = 1
       base              = 0
     }
-  network_configuration {
-    subnets          = var.subnets
-    assign_public_ip = var.fargate_enabled && var.assign_public_ip
-    security_groups  = var.security_groups
-  }
+  #network_configuration {
+  #  subnets          = var.subnets
+  #  assign_public_ip = var.fargate_enabled && var.assign_public_ip
+  #  security_groups  = var.security_groups
+  #}
 
   depends_on = [
     aws_ecs_task_definition.td
