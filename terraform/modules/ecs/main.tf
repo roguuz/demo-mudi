@@ -111,6 +111,7 @@ resource "aws_launch_template" "lt" {
   name_prefix = "${var.name}-tmplt"
   image_id = data.aws_ami.ecs_ami.id
   instance_type = "t2.micro"
+  vpc_security_group_ids = var.security_groups
   iam_instance_profile {
     name = resource.aws_iam_instance_profile.ecs.name
   }

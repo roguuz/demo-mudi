@@ -33,8 +33,8 @@ module "sg-ecs" {
   egress_rules = ["all-all"]
   ingress_with_source_security_group_id = [
     {
-      from_port   = 9000
-      to_port     = 9000
+      from_port   = 32768
+      to_port     = 65535
       protocol    = "tcp"
       source_security_group_id = module.sg-alb.security_group_id
     },
