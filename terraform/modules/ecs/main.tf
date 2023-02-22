@@ -18,8 +18,6 @@ resource "aws_ecs_task_definition" "td" {
   container_definitions    = jsonencode(local.container_definition)
   requires_compatibilities = [var.launch_type]
   network_mode             = "bridge"
-  memory                   = var.memory_limit
-  cpu                      = var.cpu_limit
   execution_role_arn = aws_iam_role.task_role.arn
   task_role_arn = aws_iam_role.task_role.arn
 

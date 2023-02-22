@@ -153,8 +153,6 @@ module "ecs-service" {
   assign_public_ip = true
   subnets = [module.vpc.private_subnets[0],module.vpc.private_subnets[1]]
   security_groups = [module.sg-ecs.security_group_id]
-  cpu_limit           = 512
-  memory_limit         = 1024
   desired_count   = 1
   log_retention_in_days = 0
   availability_zones = data.aws_availability_zones.available.names
@@ -163,7 +161,7 @@ module "ecs-service" {
     {
       name       = local.name
       privileged = false
-      image      = "brandonpapworth/http-ping-endpoint"
+      image      = "non-existing"
       image_tag  = "latest"
       port       = 8080
       environment_variables = {

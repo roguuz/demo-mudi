@@ -37,14 +37,6 @@ variable "log_retention_in_days" {
   
 }
 
-variable "memory_limit" {
-  
-}
-
-variable "cpu_limit" {
-  
-}
-
 variable "cluster" {
   
 }
