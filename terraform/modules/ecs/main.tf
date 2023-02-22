@@ -13,8 +13,16 @@ resource "aws_cloudwatch_log_group" "ecs_log_group" {
 # ECS Task Definition
 ###########################################
 
+resource "random_string" "this" {
+  length  = 5
+  special = false
+  upper   = false
+  lower   = true
+  number  = true
+}
+
 resource "aws_ecs_task_definition" "td" {
-  family                   = var.name
+  family                   = "${var.name}-${resource.random_string.this.result}"
   container_definitions    = jsonencode(local.container_definition)
   requires_compatibilities = [var.launch_type]
   network_mode             = "bridge"
