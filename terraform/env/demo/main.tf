@@ -162,6 +162,7 @@ module "ecs-service" {
       name       = local.name
       privileged = false
       image      = "non-existing"
+      memoryReservation = 512
       image_tag  = "latest"
       port       = 8080
       environment_variables = {

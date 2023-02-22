@@ -132,6 +132,11 @@ resource "aws_autoscaling_group" "asg" {
   min_size = 0
   desired_capacity = 0
   termination_policies = ["OldestInstance"]
+  lifecycle {
+    ignore_changes = [
+      desired_count, instance_type,
+    ]
+  }
 }
 
 

@@ -11,6 +11,7 @@ variable "container_task_definition" {
     name                  = string
     image                 = string
     image_tag             = string
+    memoryReservation     = number
     privileged            = bool
     port                  = number
     environment_variables = map(string)
