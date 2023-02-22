@@ -86,6 +86,16 @@ module "alb" {
       backend_protocol = "HTTP"
       backend_port     = 8080
       target_type      = "instance"
+      health_check = {
+        enabled             = true
+        interval            = 30
+        path                = "/hello"
+        port                = "traffic-port"
+        healthy_threshold   = 3
+        unhealthy_threshold = 3
+        timeout             = 6
+        protocol            = "HTTP"
+        matcher             = "200-499"
     }
   ]
 
@@ -93,7 +103,6 @@ module "alb" {
     {
       port               = 80
       protocol           = "HTTP"
-      target_group_index = 0
     }
   ]
 }
