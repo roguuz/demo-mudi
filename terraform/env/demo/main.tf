@@ -176,7 +176,7 @@ module "ecs-service" {
     {
       name       = local.name
       privileged = false
-      image      = "non"
+      image      = "nginx"
       memoryReservation = 128
       image_tag  = "latest"
       port       = 8080
