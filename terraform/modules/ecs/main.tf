@@ -85,23 +85,6 @@ resource "aws_launch_template" "lt" {
 
 }
 
-
-resource "aws_ecs_capacity_provider" "ecs_cp" {
-  name = "${var.name}-cap-prv"
-
-  auto_scaling_group_provider {
-    auto_scaling_group_arn = aws_autoscaling_group.asg.arn
-    
-    managed_termination_protection = "DISABLED"
-    managed_scaling {
-      maximum_scaling_step_size = 1
-      minimum_scaling_step_size = 1
-      status = "ENABLED"
-      target_capacity = 100
-    }
-  }
-}
-
 resource "aws_autoscaling_group" "asg" {
   name = "${var.name}-asg"
   launch_template {
