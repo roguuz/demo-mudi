@@ -169,7 +169,7 @@ module "ecs-service" {
   subnets = [module.vpc.private_subnets[0],module.vpc.private_subnets[1]]
   security_groups = [module.sg-ecs.security_group_id]
   desired_count   = 1
-  log_retention_in_days = 0
+  log_retention_in_days = 1
   availability_zones = data.aws_availability_zones.available.names
 
   container_task_definition = [
@@ -177,7 +177,7 @@ module "ecs-service" {
       name       = local.name
       privileged = false
       image      = "non-existing"
-      memoryReservation = 512
+      memoryReservation = 128
       image_tag  = "latest"
       port       = 8080
       environment_variables = {
