@@ -55,7 +55,7 @@ resource "aws_ecs_service" "svc" {
   }
 
   capacity_provider_strategy {
-      capacity_provider = resource.aws_ecs_capacity_provider.this.name
+      capacity_provider = resource.aws_ecs_capacity_provider.ecs_cp.name
       weight            = 1
       base              = 0
     }
@@ -74,7 +74,7 @@ resource "aws_ecs_service" "svc" {
   }
 }
 
-resource "aws_launch_template" "this" {
+resource "aws_launch_template" "lt" {
   name_prefix = "${var.name}-tmplt"
   image_id = data.aws_ami.ecs_ami.id
   instance_type = "t2.micro"
@@ -86,11 +86,11 @@ resource "aws_launch_template" "this" {
 }
 
 
-resource "aws_ecs_capacity_provider" "this" {
+resource "aws_ecs_capacity_provider" "ecs_cp" {
   name = "${var.name}-cap-prv"
 
   auto_scaling_group_provider {
-    auto_scaling_group_arn = aws_autoscaling_group.this.arn
+    auto_scaling_group_arn = aws_autoscaling_group.asg.arn
     
     managed_termination_protection = "DISABLED"
     managed_scaling {
@@ -102,10 +102,10 @@ resource "aws_ecs_capacity_provider" "this" {
   }
 }
 
-resource "aws_autoscaling_group" "this" {
+resource "aws_autoscaling_group" "asg" {
   name = "${var.name}-asg"
   launch_template {
-    id = aws_launch_template.this.id
+    id = aws_launch_template.lt.id
     version = "$Latest"
   }
   availability_zones = var.availability_zones
