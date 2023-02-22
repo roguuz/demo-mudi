@@ -13,16 +13,8 @@ resource "aws_cloudwatch_log_group" "ecs_log_group" {
 # ECS Task Definition
 ###########################################
 
-resource "random_string" "this" {
-  length  = 5
-  special = false
-  upper   = false
-  lower   = true
-  number  = true
-}
-
 resource "aws_ecs_task_definition" "td" {
-  family                   = "${var.name}-${resource.random_string.this.result}"
+  family                   = var.name
   container_definitions    = jsonencode(local.container_definition)
   requires_compatibilities = [var.launch_type]
   network_mode             = "bridge"
@@ -38,6 +30,10 @@ resource "aws_ecs_task_definition" "td" {
   }
 }
 
+data "aws_ecs_task_definition" "td" {
+  task_definition = aws_ecs_task_definition.td.family
+}
+
 ###########################################
 # ECS Service
 ###########################################
@@ -46,7 +42,7 @@ resource "aws_ecs_service" "svc" {
 
   name            = "${var.name}-svc"
   cluster         = var.cluster
-  task_definition = aws_ecs_task_definition.td.arn
+  task_definition = data.aws_ecs_task_definition.td.arn
   desired_count   = var.desired_count
   # launch_type     = var.launch_type
   enable_execute_command = var.enable_ecs_execute_command
@@ -55,7 +51,7 @@ resource "aws_ecs_service" "svc" {
     for_each = var.lb_enable ? [1] : []
     content {
       target_group_arn = var.target_group_arn
-      container_name   = var.name
+      container_name   = aws_ecs_task_definition.td.family
       container_port   = var.container_port
     }
   }
@@ -76,7 +72,7 @@ resource "aws_ecs_service" "svc" {
   ]
 
   lifecycle {
-    ignore_changes = [task_definition]
+    ignore_changes = []
   }
 }
 
