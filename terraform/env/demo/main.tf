@@ -96,6 +96,7 @@ module "alb" {
         timeout             = 6
         protocol            = "HTTP"
         matcher             = "200-499"
+      }
     }
   ]
 
