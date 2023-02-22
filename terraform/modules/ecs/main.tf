@@ -108,7 +108,7 @@ resource "aws_autoscaling_group" "asg" {
     id = aws_launch_template.lt.id
     version = "$Latest"
   }
-  enable_deletion_protection = false
+  protect_from_scale_in = false
   availability_zones = var.availability_zones
   max_size = 1
   min_size = 0
