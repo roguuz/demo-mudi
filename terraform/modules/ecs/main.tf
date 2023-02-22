@@ -55,7 +55,7 @@ resource "aws_ecs_service" "svc" {
     for_each = var.lb_enable ? [1] : []
     content {
       target_group_arn = var.target_group_arn
-      container_name   = aws_ecs_task_definition.td.family
+      container_name   = var.name
       container_port   = var.container_port
     }
   }
