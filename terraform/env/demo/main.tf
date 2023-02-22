@@ -106,7 +106,23 @@ module "ecs-cluster" {
   source = "terraform-aws-modules/ecs/aws"
   cluster_name = local.name
    
-   
+   autoscaling_capacity_providers = {
+    one = {
+      auto_scaling_group_arn         = module.ecs-service.asg_arn
+      managed_termination_protection = "ENABLED"
+
+      managed_scaling = {
+        maximum_scaling_step_size = 1
+        minimum_scaling_step_size = 1
+        status                    = "ENABLED"
+        target_capacity           = 100
+      }
+
+      default_capacity_provider_strategy = {
+        weight = 100
+      }
+    }
+  }	   
 }
 
 ###########################################
