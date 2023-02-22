@@ -146,7 +146,7 @@ module "ecs-service" {
   name = local.name
   user_data = local.ecs_user_data
   # launch_type = "EC2"
-  capacity_provider = module.ecs-cluster.autoscaling_capacity_providers[one]
+  capacity_provider = module.ecs-cluster.autoscaling_capacity_providers["one"]
   lb_enable   = true
   container_port = 8080
   target_group_arn = module.alb.target_group_arns[0]
