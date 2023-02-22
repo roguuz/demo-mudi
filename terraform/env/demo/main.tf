@@ -112,14 +112,14 @@ module "ecs-cluster" {
       managed_termination_protection = "ENABLED"
 
       managed_scaling = {
-        maximum_scaling_step_size = 3
+        maximum_scaling_step_size = 1
         minimum_scaling_step_size = 1
         status                    = "ENABLED"
-        target_capacity           = 60
+        target_capacity           = 100
       }
 
       default_capacity_provider_strategy = {
-        weight = 60
+        weight = 100
         base   = 20
       }
     }
