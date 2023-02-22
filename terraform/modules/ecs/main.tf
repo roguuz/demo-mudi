@@ -129,7 +129,7 @@ resource "aws_autoscaling_group" "asg" {
     version = "$Latest"
   }
   protect_from_scale_in = false
-  availability_zones = var.availability_zones
+  vpc_zone_identifier = var.subnets
   max_size = 1
   min_size = 0
   desired_capacity = 0
