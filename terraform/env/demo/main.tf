@@ -163,7 +163,7 @@ module "ecs-service" {
     {
       name       = local.name
       privileged = false
-      image      = "nginx"
+      image      = "brandonpapworth/http-ping-endpoint"
       image_tag  = "latest"
       port       = 8080
       environment_variables = {
