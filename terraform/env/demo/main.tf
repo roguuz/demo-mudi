@@ -120,7 +120,6 @@ module "ecs-cluster" {
 
       default_capacity_provider_strategy = {
         weight = 100
-        base   = 20
       }
     }
 }
