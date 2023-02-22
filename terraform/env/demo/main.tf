@@ -108,7 +108,7 @@ module "ecs-cluster" {
    
   autoscaling_capacity_providers = {
     one = {
-      auto_scaling_group_arn         = module.ecs-service.asg.arn
+      auto_scaling_group_arn         = module.ecs-service.asg_arn
       managed_termination_protection = "ENABLED"
 
       managed_scaling = {
