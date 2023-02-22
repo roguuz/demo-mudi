@@ -105,8 +105,13 @@ module "alb" {
 module "ecs-cluster" {
   source = "terraform-aws-modules/ecs/aws"
   cluster_name = local.name
+
+  cluster_configuration = {
+  "name": "containerInsights",
+  "value": "disabled"
+  }
    
-   autoscaling_capacity_providers = {
+  autoscaling_capacity_providers = {
     one = {
       auto_scaling_group_arn         = module.ecs-service.asg_arn
       managed_termination_protection = "DISABLED"

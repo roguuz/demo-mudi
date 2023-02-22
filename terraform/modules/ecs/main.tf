@@ -52,11 +52,11 @@ resource "aws_ecs_service" "svc" {
     }
   }
 
-  capacity_provider_strategy {
-      capacity_provider = var.capacity_provider
-      weight            = 1
-      base              = 0
-    }
+  # capacity_provider_strategy {
+  #     capacity_provider = var.capacity_provider
+  #     weight            = 1
+  #     base              = 0
+  #   }
   #network_configuration {
   #  subnets          = var.subnets
   #  assign_public_ip = var.fargate_enabled && var.assign_public_ip
@@ -133,8 +133,8 @@ resource "aws_autoscaling_group" "asg" {
   protect_from_scale_in = false
   vpc_zone_identifier = var.subnets
   max_size = 1
-  min_size = 0
-  desired_capacity = 0
+  min_size = 1
+  desired_capacity = 1
   termination_policies = ["OldestInstance"]
   lifecycle {
     ignore_changes = [
