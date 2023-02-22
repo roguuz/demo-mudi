@@ -55,7 +55,7 @@ resource "aws_ecs_service" "svc" {
   }
 
   capacity_provider_strategy {
-      capacity_provider = resource.aws_ecs_capacity_provider.ecs_cp.name
+      capacity_provider = var.capacity_provider
       weight            = 1
       base              = 0
     }

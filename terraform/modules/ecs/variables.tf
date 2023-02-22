@@ -1,6 +1,10 @@
 variable "name" {
 }
 
+variable "capacity_provider" {
+  
+}
+
 variable "container_task_definition" {
   
   type        = list(object({
