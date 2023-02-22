@@ -116,7 +116,11 @@ resource "aws_launch_template" "lt" {
   }
   # User data script to run on instances at launch
   user_data =base64encode(var.user_data)
-
+  lifecycle {
+    ignore_changes = [
+      instance_type,
+    ]
+  }
 
 }
 
@@ -134,7 +138,7 @@ resource "aws_autoscaling_group" "asg" {
   termination_policies = ["OldestInstance"]
   lifecycle {
     ignore_changes = [
-      desired_count, instance_type,
+      desired_capacity,
     ]
   }
 }
