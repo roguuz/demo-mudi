@@ -11,7 +11,7 @@ pipeline {
         region = "us-west-1"
         ecr_repo = "219252656223.dkr.ecr.us-west-1.amazonaws.com"
         cluster = "demo-mudi"
-        memory = "1024"
+        memoryReservation = "1024"
         port = 8080
     }
     stages {
@@ -34,8 +34,12 @@ pipeline {
                 sh (
                     script: '''
                     IMAGE=${ecr_repo}/${app_name}:${tag}
-                    TASK_DEF=$(aws ecs register-task-definition --region ${region} --family ${app_name} --network-mode bridge --container-definitions '[{"name": "'${app_name}'", "image": "'${IMAGE}'", "portMappings": [{"containerPort": '${port}', "hostPort": 0,"protocol": "tcp"}] }]' --memory ${memory} --query 'taskDefinition.revision')
-                    aws ecs update-service --cluster ${cluster} --region ${region} --service ${app_name}-svc --task-definition ${app_name}:$TASK_DEF --desired-count 1 --force-new-deployment
+                    
+                    td_arn=$(aws ecs describe-services --services ${app_name}-svc  --cluster ${cluster} --query 'services[0].taskDefinition' --region ${region} | tr -d '"' )                    
+                    aws ecs describe-task-definition --task-definition $td_arn --query 'taskDefinition' --output json --region ${region} > td-tmp.json
+                    jq '.containerDefinitions[0].image = "${IMAGE}" | del(.revision, .status , .compatibilities ,.taskDefinitionArn ,.requiresAttributes)' td-tmp.json > td.json
+                    new_td_arn=$(aws ecs register-task-definition --cli-input-json file://td.json --region ${region} | jq -r '.taskDefinition.taskDefinitionArn')
+                    aws ecs update-service --cluster ${cluster} --region ${region} --service ${app_name}-svc --task-definition ${new_td_arn} --desired-count 1 --force-new-deployment
                     echo "deployed!"
                     ''',
                     returnStdout: true
