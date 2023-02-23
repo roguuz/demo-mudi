@@ -228,6 +228,7 @@ policy = <<EOF
         "Action": [
 		"ecr:*",
 		"ecs:*",
+    "iam:PassRole",
 		"ssmmessages:CreateControlChannel",
 		"ssmmessages:CreateDataChannel",
 		"ssmmessages:OpenControlChannel",
