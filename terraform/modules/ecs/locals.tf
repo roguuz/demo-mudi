@@ -9,7 +9,7 @@ locals {
 
     portMappings = [{
       containerPort = task.port
-      hostPort      = task.port
+      hostPort      = 0
       protocol      = "tcp"
     }]
 
